@@ -127,3 +127,303 @@ body {
     padding: 1.75rem 1.25rem;
   }
 }
+
+/*boton de inicar sesion*/
+.btn-cerrar-sesion {
+  padding: 8px 16px;
+  background-color: white;
+  color: #c0392b;
+  border: 1px solid #c0392b;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cerrar-sesion:hover {
+  background-color: #c0392b;
+  color: white;
+}
+
+
+
+/* Menu Principal */
+
+.menu-container {
+  min-height: 100vh;
+  padding: 2.5rem;
+  background-color: #f7f9fb;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+.menu-header {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.menu-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-subtitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #457b9d;
+  margin-bottom: 6px;
+}
+
+.menu-title h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #263238;
+}
+
+.menu-title p {
+  margin: 8px 0 0;
+  color: #6c757d;
+  font-size: 15px;
+}
+
+.menu-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-gestionar-cuenta {
+  padding: 10px 16px;
+  background-color: #457b9d;
+  color: white;
+  text-decoration: none;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-gestionar-cuenta:hover {
+  background-color: #365f7a;
+  transform: translateY(-1px);
+}
+
+.btn-cerrar-sesion {
+  padding: 10px 16px;
+  background-color: white;
+  color: #c0392b;
+  border: 1px solid #e0b4af;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-cerrar-sesion:hover {
+  background-color: #c0392b;
+  color: white;
+}
+
+/* Información del usuario */
+
+.usuario-card {
+  max-width: 1200px;
+  margin: 0 auto 2.5rem;
+  padding: 1.5rem;
+  background-color: white;
+  border: 1px solid #e3e8ec;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-sizing: border-box;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.usuario-avatar {
+  width: 65px;
+  height: 65px;
+  min-width: 65px;
+  border-radius: 50%;
+  background-color: #457b9d;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.usuario-bienvenida {
+  font-size: 13px;
+  color: #7a858c;
+  margin-bottom: 3px;
+}
+
+.usuario-info h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #263238;
+}
+
+.usuario-detalles {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  color: #68737a;
+  font-size: 14px;
+}
+
+.usuario-detalles strong {
+  color: #444;
+}
+
+/* Módulos */
+
+.menu-container main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.modulos-header {
+  margin-bottom: 1.25rem;
+}
+
+.modulos-header h2 {
+  margin: 0;
+  color: #263238;
+  font-size: 22px;
+}
+
+.modulos-header p {
+  margin: 6px 0 0;
+  color: #7a858c;
+  font-size: 14px;
+}
+
+.modulos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.modulo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  min-height: 190px;
+  background-color: white;
+  border: 1px solid #e2e7eb;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.modulo-card:hover {
+  border-color: #457b9d;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+.modulo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background-color: #edf4f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  margin-bottom: 1rem;
+}
+
+.modulo-content h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  color: #263238;
+}
+
+.modulo-content p {
+  margin: 0;
+  color: #707b82;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modulo-arrow {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  font-size: 20px;
+  color: #457b9d;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.modulo-card:hover .modulo-arrow {
+  transform: translateX(4px);
+}
+
+/* Responsive */
+
+@media (max-width: 850px) {
+  .modulos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu-header-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .menu-container {
+    padding: 1.25rem;
+  }
+
+  .menu-title h1 {
+    font-size: 26px;
+  }
+
+  .menu-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-gestionar-cuenta,
+  .btn-cerrar-sesion {
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .usuario-card {
+    align-items: flex-start;
+  }
+
+  .usuario-detalles {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+

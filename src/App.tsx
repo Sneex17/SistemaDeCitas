@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Supabase } from "./services/Supabase";
 import { MenuPrincipal } from "./pages/MenuPrincipal"
 import "./App.css";
+import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from "./routes/routes";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -70,14 +72,14 @@ function App() {
     }
   };
 
-  if (usuarioLogueado) {
-    return (
-      <MenuPrincipal 
-        usuario={usuarioLogueado} 
-        onLogout={() => setUsuarioLogueado(null)} 
-      />
-    )
-  }
+if (usuarioLogueado) {
+  return (
+    <AppRoutes
+      usuario={usuarioLogueado}
+      onLogout={() => setUsuarioLogueado(null)}
+    />
+  );
+}
 
   return (
     <div className="login-container">

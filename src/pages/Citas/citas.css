@@ -1,0 +1,366 @@
+
+/* Page de citas */
+
+.citas-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #f5f7fa;
+  font-family: Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* Header */
+
+.citas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.citas-header h1 {
+  margin: 0.3rem 0;
+  font-size: 2rem;
+}
+
+.citas-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+/* Botón nueva cita */
+
+.btn-nueva-cita {
+  border: none;
+  background: #457b9d;
+  color: white;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-nueva-cita:hover {
+  background: #35627f;
+}
+
+/* Filtros */
+
+.filtros-citas {
+  background: white;
+  padding: 1.2rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.filtros-citas h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.filtros-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input-filtro,
+.select-filtro {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #1f2937;
+  background: white;
+  outline: none;
+}
+
+.input-filtro:focus,
+.select-filtro:focus {
+  border-color: #457b9d;
+  box-shadow: 0 0 0 2px rgba(69, 123, 157, 0.15);
+}
+
+.input-filtro {
+  min-width: 200px;
+}
+
+.select-filtro {
+  min-width: 180px;
+}
+
+/* Botón buscar */
+
+.btn-buscar {
+  border: none;
+  background: #457b9d;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-buscar:hover {
+  background: #35627f;
+}
+
+/* Título tabla */
+
+.citas-container > section:last-of-type h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Tabla */
+
+.tabla-citas-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.tabla-citas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-citas th,
+.tabla-citas td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabla-citas th {
+  background: #457b9d;
+  color: white;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.tabla-citas th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.tabla-citas th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.tabla-citas tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Estados */
+
+.estado-cita {
+  display: inline-block;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.estado-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.estado-confirmada {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado-cancelada {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.estado-completada {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* Acciones */
+
+.acciones-cita {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-accion-cita {
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-accion-cita:first-child {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.btn-accion-cita:first-child:hover {
+  background: #bae6fd;
+}
+
+.btn-eliminar-cita {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-eliminar-cita:hover {
+  background: #fecaca;
+}
+
+/* Modal */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(31, 41, 55, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.modal-cita {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal-cita h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.formulario-cita {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.input-cita {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: Arial, sans-serif;
+  color: #1f2937;
+  background: white;
+  outline: none;
+}
+
+.input-cita:focus {
+  border-color: #457b9d;
+  box-shadow: 0 0 0 2px rgba(69, 123, 157, 0.15);
+}
+
+.textarea-cita {
+  grid-column: 1 / -1;
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Acciones del modal */
+
+.modal-acciones {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.btn-cancelar,
+.btn-guardar {
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-cancelar {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.btn-cancelar:hover {
+  background: #d1d5db;
+}
+
+.btn-guardar {
+  background: #457b9d;
+  color: white;
+}
+
+.btn-guardar:hover {
+  background: #35627f;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .citas-container {
+    padding: 1rem;
+  }
+
+  .citas-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .filtros-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input-filtro,
+  .select-filtro,
+  .btn-buscar {
+    width: 100%;
+  }
+
+  .formulario-cita {
+    grid-template-columns: 1fr;
+  }
+
+  .textarea-cita,
+  .modal-acciones {
+    grid-column: auto;
+  }
+
+  .modal-acciones {
+    flex-direction: column;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    width: 100%;
+  }
+}

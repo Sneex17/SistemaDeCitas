@@ -1,0 +1,153 @@
+
+/* =========================
+   GESTIONAR CUENTA
+   ========================= */
+
+
+.btn-gestionar-cuenta {
+  padding: 8px 16px;
+  background-color: #457B9D;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-gestionar-cuenta:hover {
+  background-color: #365f7a;
+}
+
+.cuenta-container {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+  padding: 2rem;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+.cuenta-card {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.cuenta-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 1rem;
+}
+
+.cuenta-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.cuenta-header p {
+  margin-top: 0.5rem;
+  color: #666;
+}
+
+.cuenta-mensaje {
+  padding: 12px 16px;
+  margin-bottom: 1.5rem;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+}
+
+.cuenta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.cuenta-section {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.cuenta-section h3 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  color: #333;
+}
+
+.cuenta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cuenta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+
+.cuenta-field label {
+  font-weight: 600;
+  color: #444;
+}
+
+.cuenta-field input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+}
+
+.cuenta-field input:focus {
+  border-color: #457B9D;
+  box-shadow: 0 0 0 2px rgba(69, 123, 157, 0.12);
+}
+
+.cuenta-field input:disabled {
+  background-color: #f1f1f1;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.cuenta-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-cuenta-volver {
+  padding: 10px 18px;
+  background-color: white;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cuenta-volver:hover {
+  background-color: #f1f1f1;
+}
+
+.btn-cuenta-guardar {
+  padding: 10px 18px;
+  background-color: #457B9D;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cuenta-guardar:hover {
+  background-color: #365f7a;
+}

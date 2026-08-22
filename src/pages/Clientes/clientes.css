@@ -1,0 +1,447 @@
+/* Page de clientes */
+
+
+.clientes-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #f5f7fa;
+  font-family: Arial, sans-serif;
+  color: #1f2937;
+}
+
+.clientes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.clientes-subtitle {
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #457b9d;
+}
+
+.clientes-header h1 {
+  margin: 0.3rem 0;
+  font-size: 2rem;
+}
+
+.clientes-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.btn-volver {
+  text-decoration: none;
+  background: #457b9d;
+  color: white;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-volver:hover {
+  background: #35627f;
+}
+
+
+.clientes-actions {
+  background: white;
+  padding: 1.2rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.clientes-actions h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.btn-nuevo-cliente {
+  border: none;
+  background: #457b9d;
+  color: white;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-nuevo-cliente:hover {
+  background: #35627f;
+}
+
+
+.clientes-table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Tabla */
+.clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.clientes-table th,
+.clientes-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.clientes-table th {
+  background: #457b9d;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.clientes-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.clientes-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.clientes-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+
+.estado-activo {
+  display: inline-block;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado-inactivo {
+  display: inline-block;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-editar,
+.btn-eliminar {
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 0.4rem;
+}
+
+.btn-editar {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.btn-eliminar {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-editar:hover {
+  background: #bae6fd;
+}
+
+.btn-eliminar:hover {
+  background: #fecaca;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .clientes-container {
+    padding: 1rem;
+  }
+
+  .clientes-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .clientes-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+
+ /* ================================
+   MODAL NUEVO CLIENTE
+================================ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-cliente {
+  width: 90%;
+  max-width: 850px;
+  max-height: 90vh;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+
+  overflow-y: auto;
+
+  animation: aparecerModal 0.2s ease-out;
+}
+
+/* Animación */
+
+@keyframes aparecerModal {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   ENCABEZADO DEL MODAL
+================================ */
+
+.modal-cliente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 25px 30px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-cliente-header h2 {
+  margin: 0 0 6px;
+
+  color: #1f2937;
+
+  font-size: 24px;
+}
+
+.modal-cliente-header p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.btn-cerrar-modal {
+  border: none;
+  background: transparent;
+
+  font-size: 30px;
+  line-height: 1;
+
+  color: #6b7280;
+
+  cursor: pointer;
+
+  padding: 0 5px;
+
+  transition: 0.2s;
+}
+
+.btn-cerrar-modal:hover {
+  color: #dc2626;
+}
+
+/* ================================
+   FORMULARIO
+================================ */
+
+.formulario-cliente {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+
+  padding: 30px;
+}
+
+.campo-cliente {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.campo-cliente label {
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #374151;
+}
+
+.campo-cliente input,
+.campo-cliente select,
+.campo-cliente textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 7px;
+
+  font-size: 14px;
+
+  font-family: inherit;
+
+  outline: none;
+
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo-cliente input:focus,
+.campo-cliente select:focus,
+.campo-cliente textarea:focus {
+  border-color: #457b9d;
+
+  box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.15);
+}
+
+.campo-cliente textarea {
+  min-height: 90px;
+
+  resize: vertical;
+}
+
+/* Campo que ocupa las dos columnas */
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+/* ================================
+   BOTONES
+================================ */
+
+.modal-cliente-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  padding: 20px 30px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-cancelar-cliente,
+.btn-guardar-cliente {
+  padding: 11px 20px;
+
+  border-radius: 7px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.btn-cancelar-cliente {
+  background: #ffffff;
+
+  border: 1px solid #d1d5db;
+
+  color: #374151;
+}
+
+.btn-cancelar-cliente:hover {
+  background: #f3f4f6;
+}
+
+.btn-guardar-cliente {
+  background: #457b9d;
+
+  border: 1px solid #457b9d;
+
+  color: white;
+}
+
+.btn-guardar-cliente:hover {
+  background: #35647f;
+
+  border-color: #35647f;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 700px) {
+  .modal-cliente {
+    width: 95%;
+  }
+
+  .formulario-cliente {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-completo {
+    grid-column: auto;
+  }
+
+  .modal-cliente-header {
+    padding: 20px;
+  }
+
+  .formulario-cliente {
+    padding: 20px;
+  }
+
+  .modal-cliente-actions {
+    padding: 20px;
+  }
+}
