@@ -1,26 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ListaSexos } from "../../Controllers/SexoController";
+import { type Sexo } from "../../entities/Sexo";
+import { ListaNacionalidades } from "../../Controllers/NacionalidadController";
+import { type Estado } from "../../entities/Estado";
+import { type Nacionalidad } from "../../entities/Nacionalidad";
+import { ListaEstadosEmpleados } from "../../Controllers/EstadoController";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { GuardarCliente } from "../../Controllers/ClienteController";
+import type { Cliente } from "../../entities/Cliente";
 
 interface ClienteFormProps {
-  onGuardar: (cliente: any) => void;
+  onGuardar: (cliente: Cliente) => void;
   onCancelar: () => void;
 }
+
+const Alertas = withReactContent(Swal);
 
 export default function ClienteForm({
   onGuardar,
   onCancelar,
 }: ClienteFormProps) {
-  const [nuevoCliente, setNuevoCliente] = useState({
+  const [nuevoCliente, setNuevoCliente] = useState<Cliente>({
     Nombre: "",
     Apellido: "",
-    Sexo: "",
-    Nacionalidad: "",
+    IdSexo: 0,
+    IdNacionalidad: 0,
     FechaNacimiento: "",
     Telefono: "",
     Direccion: "",
     Email: "",
-    Contraseña: "",
-    Estado: "Activo",
+    Contrasena: "",
+    IdEstado: 0,
   });
+
+  const [sexos, setSexo] = useState<Sexo[]>([]);
+  useEffect(() => {
+    ListaSexos().then(setSexo);
+  }, []);
+
+  const [nacionalidad, setNacionalidad] = useState<Nacionalidad[]>([]);
+  useEffect(() => {
+    ListaNacionalidades().then(setNacionalidad);
+  }, []);
+
+  const [estado, setEstado] = useState<Estado[]>([]);
+  useEffect(() => {
+    ListaEstadosEmpleados().then(setEstado);
+  }, []);
 
   const manejarCambio = (
     e: React.ChangeEvent<
@@ -31,52 +58,63 @@ export default function ClienteForm({
 
     setNuevoCliente({
       ...nuevoCliente,
-      [name]: value,
+      [name]: name.startsWith("Id") ? Number(value) : value,
     });
   };
 
-  const guardarCliente = () => {
+  const guardarCliente = async () => {
+    console.log(nuevoCliente);
     if (
       !nuevoCliente.Nombre ||
       !nuevoCliente.Apellido ||
       !nuevoCliente.Email ||
       !nuevoCliente.Telefono
     ) {
-      alert("Complete los campos obligatorios.");
+      Alertas.fire({
+        title: <p>Campos requeridos</p>,
+        icon: "warning",
+        text: "Favor de llenar los campos faltantes!",
+      });
       return;
     }
 
-    onGuardar(nuevoCliente);
+    const result = await GuardarCliente(nuevoCliente);
+
+    if (result) {
+      Alertas.fire({
+        title: "¡Éxito!",
+        text: "Cliente registrado correctamente",
+        icon: "success",
+      });
+      onGuardar(nuevoCliente);
+    } else {
+      Alertas.fire({
+        title: "Error",
+        text: "No se pudo guardar el cliente en la base de datos",
+        icon: "error",
+      });
+    }
   };
 
+  // El return DEL COMPONENTE va aquí afuera
   return (
     <div className="modal-overlay">
       <div className="modal-cliente">
-
-        
         <div className="modal-cliente-header">
           <div>
             <h2>Nuevo Cliente</h2>
-
-            <p>
-              Registre la información del nuevo cliente
-            </p>
+            <p>Registre la información del nuevo cliente</p>
           </div>
 
-          <button
-            className="btn-cerrar-modal"
-            onClick={onCancelar}
-          >
+          <button className="btn-cerrar-modal" onClick={onCancelar}>
             ×
           </button>
         </div>
 
         {/* Campos */}
         <div className="formulario-cliente">
-
           <div className="campo-cliente">
             <label>Nombre *</label>
-
             <input
               type="text"
               name="Nombre"
@@ -88,7 +126,6 @@ export default function ClienteForm({
 
           <div className="campo-cliente">
             <label>Apellido *</label>
-
             <input
               type="text"
               name="Apellido"
@@ -100,63 +137,38 @@ export default function ClienteForm({
 
           <div className="campo-cliente">
             <label>Sexo</label>
-
             <select
-              name="Sexo"
-              value={nuevoCliente.Sexo}
+              name="IdSexo"
+              value={nuevoCliente.IdSexo}
               onChange={manejarCambio}
             >
-              <option value="">
-                Seleccione el sexo
-              </option>
-
-              <option value="Femenino">
-                Femenino
-              </option>
-
-              <option value="Masculino">
-                Masculino
-              </option>
+              <option value={0}>Seleccione el sexo</option>
+              {sexos.map((s) => (
+                <option key={s.IdSexo} value={s.IdSexo}>
+                  {s.Sexo}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="campo-cliente">
             <label>Nacionalidad</label>
-
             <select
-              name="Nacionalidad"
-              value={nuevoCliente.Nacionalidad}
+              name="IdNacionalidad"
+              value={nuevoCliente.IdNacionalidad}
               onChange={manejarCambio}
             >
-              <option value="">
-                Seleccione la nacionalidad
-              </option>
-
-              <option value="Dominicana">
-                Dominicana
-              </option>
-
-              <option value="Estadounidense">
-                Estadounidense
-              </option>
-
-              <option value="Colombiana">
-                Colombiana
-              </option>
-
-              <option value="Venezolana">
-                Venezolana
-              </option>
-
-              <option value="Española">
-                Española
-              </option>
+              <option value={0}>Seleccione la nacionalidad</option>
+              {nacionalidad.map((n) => (
+                <option key={n.IdNacionalidad} value={n.IdNacionalidad}>
+                  {n.Nacionalidad}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="campo-cliente">
             <label>Fecha de nacimiento</label>
-
             <input
               type="date"
               name="FechaNacimiento"
@@ -167,7 +179,6 @@ export default function ClienteForm({
 
           <div className="campo-cliente">
             <label>Teléfono *</label>
-
             <input
               type="tel"
               name="Telefono"
@@ -179,7 +190,6 @@ export default function ClienteForm({
 
           <div className="campo-cliente campo-completo">
             <label>Dirección</label>
-
             <textarea
               name="Direccion"
               value={nuevoCliente.Direccion}
@@ -190,7 +200,6 @@ export default function ClienteForm({
 
           <div className="campo-cliente">
             <label>Email *</label>
-
             <input
               type="email"
               name="Email"
@@ -202,11 +211,10 @@ export default function ClienteForm({
 
           <div className="campo-cliente">
             <label>Contraseña</label>
-
             <input
               type="password"
-              name="Contraseña"
-              value={nuevoCliente.Contraseña}
+              name="Contrasena"
+              value={nuevoCliente.Contrasena}
               onChange={manejarCambio}
               placeholder="Ingrese la contraseña"
             />
@@ -214,43 +222,31 @@ export default function ClienteForm({
 
           <div className="campo-cliente">
             <label>Estado</label>
-
             <select
-              name="Estado"
-              value={nuevoCliente.Estado}
+              name="IdEstado"
+              value={nuevoCliente.IdEstado}
               onChange={manejarCambio}
             >
-              <option value="Activo">
-                Activo
-              </option>
-
-              <option value="Inactivo">
-                Inactivo
-              </option>
+              <option value={0}>Seleccione estado</option>
+              {estado.map((e) => (
+                <option key={e.IdEstado} value={e.IdEstado}>
+                  {e.Estado}
+                </option>
+              ))}
             </select>
           </div>
-
         </div>
 
         {/* Botones */}
         <div className="modal-cliente-actions">
-
-          <button
-            className="btn-cancelar-cliente"
-            onClick={onCancelar}
-          >
+          <button className="btn-cancelar-cliente" onClick={onCancelar}>
             Cancelar
           </button>
 
-          <button
-            className="btn-guardar-cliente"
-            onClick={guardarCliente}
-          >
+          <button className="btn-guardar-cliente" onClick={guardarCliente}>
             Guardar Cliente
           </button>
-
         </div>
-
       </div>
     </div>
   );

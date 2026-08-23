@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./citas.css";
 
 interface Cita {
@@ -50,7 +51,7 @@ export default function Citas() {
             Administración y control de las citas del sistema
           </p>
         </div>
-
+        
         <button
           onClick={() => setMostrarFormulario(true)}
           className="btn-nueva-cita"

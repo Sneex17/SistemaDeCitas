@@ -1,13 +1,13 @@
 export interface Cliente{
-    IdCliente: number;
+    IdCliente?: number;
     Nombre: string;
     Apellido: string;
     IdSexo: number;
     IdNacionalidad: number;
-    FechaNacimiento: Date;
+    FechaNacimiento: string;
     Telefono: string;
     Direccion: string;
-    email: string;
-    contrasena: string;
+    Email: string;
+    Contrasena: string;
     IdEstado: number;
 }

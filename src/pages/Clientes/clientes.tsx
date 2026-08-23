@@ -1,60 +1,67 @@
 import { Link } from "react-router-dom";
 import "./clientes.css";
 import ClienteForm from "./formularioClientes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  type ClienteDetalle,
+  ListaClientes,
+  DesactivarCliente,
+} from "../../Controllers/ClienteController";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-interface Cliente {
-  IdCliente: number;
-  Nombre: string;
-  Apellido: string;
-  Sexo: string;
-  Nacionalidad: string;
-  FechaNacimiento: string;
-  Telefono: string;
-  Direccion: string;
-  Email: string;
-  Estado: string;
-}
-
-const clientes: Cliente[] = [
-  {
-    IdCliente: 1,
-    Nombre: "María",
-    Apellido: "Rodríguez",
-    Sexo: "Femenino",
-    Nacionalidad: "Dominicana",
-    FechaNacimiento: "1998-05-12",
-    Telefono: "809-555-1234",
-    Direccion: "Santo Domingo",
-    Email: "maria@gmail.com",
-    Estado: "Activo",
-  },
-  {
-    IdCliente: 2,
-    Nombre: "Carlos",
-    Apellido: "Martínez",
-    Sexo: "Masculino",
-    Nacionalidad: "Dominicana",
-    FechaNacimiento: "1995-08-20",
-    Telefono: "809-555-5678",
-    Direccion: "Santo Domingo",
-    Email: "carlos@gmail.com",
-    Estado: "Activo",
-  },
-];
+const Alertas = withReactContent(Swal);
 
 export default function Clientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [clientes, setCliente] = useState<ClienteDetalle[]>([]);
+  useEffect(() => {
+    ListaClientes().then(setCliente);
+  }, []);
 
+  const manejarEliminar = (idcliente: number) => {
+    Alertas.fire({
+      title: "¿Inactivar empleado?",
+      text: "El estado del empleado cambiará a Inactivo.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, inactivar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const exito = await DesactivarCliente(idcliente);
+
+        if (exito) {
+          setCliente((prev) =>
+            prev.map((cliente) =>
+              cliente.IdCliente === idcliente
+                ? { ...cliente, Estado: "Inactivo" }
+                : cliente,
+            ),
+          );
+
+          Alertas.fire({
+            title: "¡Inactivado!",
+            text: "El cliente ha sido marcado como Inactivo.",
+            icon: "success",
+          });
+        } else {
+          Alertas.fire({
+            title: "Error",
+            text: "No se pudo cambiar el estado del cliente.",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
   return (
     <div className="clientes-container">
-
-     
       <header className="clientes-header">
         <div>
-          <span className="clientes-subtitle">
-            SISTEMA DE CITAS
-          </span>
+          <span className="clientes-subtitle">SISTEMA DE CITAS</span>
 
           <h1>Gestión de Clientes</h1>
 
@@ -103,6 +110,7 @@ export default function Clientes() {
                 <td>{cliente.IdCliente}</td>
                 <td>{cliente.Nombre}</td>
                 <td>{cliente.Apellido}</td>
+                <td>{cliente.Sexo}</td>
                 <td>{cliente.Telefono}</td>
                 <td>{cliente.Email}</td>
                 <td>{cliente.Nacionalidad}</td>
@@ -120,11 +128,12 @@ export default function Clientes() {
                 </td>
 
                 <td>
-                  <button className="btn-editar">
-                    Editar
-                  </button>
+                  <button className="btn-editar">Editar</button>
 
-                  <button className="btn-eliminar">
+                  <button
+                    className="btn-eliminar"
+                    onClick={() => manejarEliminar(cliente.IdCliente)}
+                  >
                     Eliminar
                   </button>
                 </td>
@@ -146,9 +155,6 @@ export default function Clientes() {
           }}
         />
       )}
-
     </div>
   );
 }
-
-

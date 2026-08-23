@@ -23,7 +23,7 @@ export default function GestionEmpleados() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   const guardarEmpleado = (nuevoEmpleado: Omit<Empleado, "IdEmpleado">) => {
-    console.log(nuevoEmpleado)
+    //console.log(nuevoEmpleado)
     setMostrarFormulario(false);
   };
 const manejarEliminar = (idEmpleado: number) => {
