@@ -54,5 +54,4 @@ export async function ListaEmpleados(): Promise<EmpleadoDetalle[]> {
         console.error('Error fetching empleados', err.message);
     }
     return [];
-
 }

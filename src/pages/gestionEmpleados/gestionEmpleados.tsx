@@ -7,6 +7,8 @@ import {
   ListaEmpleados,
 } from "../../Controllers/EmpleadoController";
 
+import {type Empleado} from "../../entities/Empleado";
+
 export default function GestionEmpleados() {
 
   const [Empleados, setEmpleados] = useState<EmpleadoDetalle[]>([]);
@@ -15,13 +17,13 @@ useEffect(() => {
 }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
-  const guardarEmpleado = (nuevoEmpleado: Omit<EmpleadoDetalle, "IdEmpleado">) => {
-    const empleado: EmpleadoDetalle = {
+  const guardarEmpleado = (nuevoEmpleado: Omit<Empleado, "IdEmpleado">) => {
+    const empleado: Empleado = {
       IdEmpleado: Empleados.length + 1,
       ...nuevoEmpleado,
     };
-
-    setEmpleados([...Empleados, empleado]);
+    console.log(nuevoEmpleado);
+    //setEmpleados([...Empleados, empleado]);
     setMostrarFormulario(false);
   };
 

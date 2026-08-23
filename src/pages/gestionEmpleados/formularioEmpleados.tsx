@@ -3,28 +3,22 @@ import { ListaSexos } from "../../Controllers/SexoController";
 import { ListaNacionalidades } from "../../Controllers/NacionalidadController";
 import { ListaRoles } from "../../Controllers/RolController";
 import { ListaEstadosEmpleados } from "../../Controllers/EstadoController";
-import { ListaEstadoCivil} from "../../Controllers/ControllerEstadoCivil"
+import { ListaEstadoCivil } from "../../Controllers/ControllerEstadoCivil";
 import { type Rol } from "../../entities/Rol";
 import { type Nacionalidad } from "../../entities/Nacionalidad";
 import { type Sexo } from "../../entities/Sexo";
 import { type Estado } from "../../entities/Estado";
-import { type EstadoCivil} from "../../entities/EstadoCivil"
-interface EmpleadoFormData {
-  Nombre: string;
-  Apellido: string;
-  Sexo: string;
-  Nacionalidad: string;
-  FechaNacimiento: string;
-  Telefono: string;
-  Direccion: string;
-  Email: string;
-  Cargo: string;
-  FechaIngreso: string;
-  Estado: string;
-}
+import { type EstadoCivil } from "../../entities/EstadoCivil";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import {type Empleado } from "../../entities/Empleado"
+
+
+const Alertas = withReactContent(Swal);
+
 
 interface EmpleadoFormProps {
-  onGuardar: (empleado: EmpleadoFormData) => void;
+  onGuardar: (empleado: Empleado) => void;
   onCancelar: () => void;
 }
 
@@ -32,18 +26,18 @@ export default function EmpleadoForm({
   onGuardar,
   onCancelar,
 }: EmpleadoFormProps) {
-  const [nuevoEmpleado, setNuevoEmpleado] = useState<EmpleadoFormData>({
+  const [nuevoEmpleado, setNuevoEmpleado] = useState<Empleado>({
     Nombre: "",
     Apellido: "",
-    Sexo: "",
-    Nacionalidad: "",
+    IdSexo: 0,
+    IdNacionalidad: 0,
+    IdEstadoCivil: 0,
     FechaNacimiento: "",
     Telefono: "",
     Direccion: "",
-    Email: "",
-    Cargo: "",
+    IdRol: 0,
+    IdEstado: 0,
     FechaIngreso: "",
-    Estado: "Activo",
   });
 
   const manejarCambio = (
@@ -55,19 +49,23 @@ export default function EmpleadoForm({
 
     setNuevoEmpleado((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name.startsWith("Id") ? Number(value) : value,
     }));
   };
 
   const guardarEmpleado = () => {
+    console.log(nuevoEmpleado)
     if (
       !nuevoEmpleado.Nombre ||
       !nuevoEmpleado.Apellido ||
-      !nuevoEmpleado.Email ||
       !nuevoEmpleado.Telefono ||
-      !nuevoEmpleado.Cargo
+      !nuevoEmpleado.IdRol
     ) {
-      alert("Complete los campos obligatorios.");
+      Alertas.fire({
+        title: <p>Campo requeridos</p>,
+        icon: "warning",
+        text: "Favor de llenar los campos faltantes!"
+      })
       return;
     }
 
@@ -148,8 +146,8 @@ export default function EmpleadoForm({
             <label>Sexo</label>
 
             <select
-              name="Sexo"
-              value={nuevoEmpleado.Sexo}
+              name="IdSexo"
+              value={nuevoEmpleado.IdSexo}
               onChange={manejarCambio}
             >
               <option value="">Seleccione el sexo</option>
@@ -166,8 +164,8 @@ export default function EmpleadoForm({
             <label>Nacionalidad</label>
 
             <select
-              name="Nacionalidad"
-              value={nuevoEmpleado.Nacionalidad}
+              name="IdNacionalidad"
+              value={nuevoEmpleado.IdNacionalidad}
               onChange={manejarCambio}
             >
               <option value="">Seleccione la nacionalidad</option>
@@ -184,8 +182,8 @@ export default function EmpleadoForm({
             <label>Estado Civil</label>
 
             <select
-              name="Nacionalidad"
-              value={nuevoEmpleado.Nacionalidad}
+              name="IdEstadoCivil"
+              value={nuevoEmpleado.IdEstadoCivil}
               onChange={manejarCambio}
             >
               <option value="">Seleccione el estado civil</option>
@@ -234,26 +232,13 @@ export default function EmpleadoForm({
             />
           </div>
 
-          {/* Email */}
-          <div className="campo-empleado">
-            <label>Email *</label>
-
-            <input
-              type="email"
-              name="Email"
-              value={nuevoEmpleado.Email}
-              onChange={manejarCambio}
-              placeholder="correo@ejemplo.com"
-            />
-          </div>
-
           {/* Cargo */}
           <div className="campo-empleado">
             <label>Cargo *</label>
 
             <select
-              name="Cargo"
-              value={nuevoEmpleado.Cargo}
+              name="IdRol"
+              value={nuevoEmpleado.IdRol}
               onChange={manejarCambio}
             >
               <option value="">Seleccione el cargo</option>
@@ -282,8 +267,8 @@ export default function EmpleadoForm({
             <label>Estado</label>
 
             <select
-              name="Estado"
-              value={nuevoEmpleado.Estado}
+              name="IdEstado"
+              value={nuevoEmpleado.IdEstado}
               onChange={manejarCambio}
             >
               {estado.map((e) => (

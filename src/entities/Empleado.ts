@@ -1,13 +1,14 @@
 export interface Empleado{
-    IdEmpleado: number;
+    IdEmpleado?: number;
     Nombre: string;
     Apellido: string;
     IdSexo: number;
     IdNacionalidad: number;
     IdEstadoCivil: number;
-    FechaNacimiento: Date;
+    FechaNacimiento: string;
     Telefono: string;
     Direccion: string;
     IdRol: number;
     IdEstado: number;
+    FechaIngreso: string;
 }
