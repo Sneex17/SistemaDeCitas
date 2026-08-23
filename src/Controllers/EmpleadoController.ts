@@ -87,3 +87,18 @@ export async function GuardarEmpleado(empleado: Empleado): Promise<boolean> {
     return false;
   }
 }
+
+export async function DesactivarEmpleado(idEmpleado: number): Promise<boolean> {
+  try {
+    const { error } = await Supabase
+      .from('empleado')
+      .update({ idestado: 2 })
+      .eq('idempleado', idEmpleado);
+
+    if (error) throw error;
+    return true;
+  } catch (err: any) {
+    console.error('Error al inactivar empleado:', err.message);
+    return false;
+  }
+}

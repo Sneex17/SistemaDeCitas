@@ -4,24 +4,67 @@ import EmpleadoForm from "./formularioEmpleados";
 import "./gestionEmpleados.css";
 import {
   type EmpleadoDetalle,
-  ListaEmpleados,
+  ListaEmpleados, DesactivarEmpleado
 } from "../../Controllers/EmpleadoController";
 
-import {type Empleado} from "../../entities/Empleado";
+import { type Empleado } from "../../entities/Empleado";
+
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const Alertas = withReactContent(Swal);
 
 export default function GestionEmpleados() {
 
   const [Empleados, setEmpleados] = useState<EmpleadoDetalle[]>([]);
-useEffect(() => {
-  ListaEmpleados().then(setEmpleados);
-}, []);
+  useEffect(() => {
+    ListaEmpleados().then(setEmpleados);
+  }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   const guardarEmpleado = (nuevoEmpleado: Omit<Empleado, "IdEmpleado">) => {
     console.log(nuevoEmpleado)
     setMostrarFormulario(false);
   };
+const manejarEliminar = (idEmpleado: number) => {
+  Alertas.fire({
+    title: "¿Inactivar empleado?",
+    text: "El estado del empleado cambiará a Inactivo.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, inactivar",
+    cancelButtonText: "Cancelar",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const exito = await DesactivarEmpleado(idEmpleado);
 
+      if (exito) {
+        
+        setEmpleados((prev) =>
+          prev.map((emp) =>
+            emp.IdEmpleado === idEmpleado
+              ? { ...emp, Estado: "Inactivo" }
+              : emp
+          )
+        );
+
+        Alertas.fire({
+          title: "¡Inactivado!",
+          text: "El empleado ha sido marcado como Inactivo.",
+          icon: "success",
+        });
+      } else {
+        Alertas.fire({
+          title: "Error",
+          text: "No se pudo cambiar el estado del empleado.",
+          icon: "error",
+        });
+      }
+    }
+  });
+};
   return (
     <div className="empleados-container">
       {/* Encabezado */}
@@ -106,21 +149,25 @@ useEffect(() => {
                 <td>
                   <button className="btn-editar">Editar</button>
 
-                  <button className="btn-eliminar">Eliminar</button>
-                </td>
+                  <button className="btn-eliminar"
+                    onClick={() => manejarEliminar(empleado.IdEmpleado)}
+                    >Eliminar</button>
+              </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </section>
+        </tbody>
+      </table>
+    </section>
 
-      {/* Modal */}
-      {mostrarFormulario && (
-        <EmpleadoForm
-          onGuardar={guardarEmpleado}
-          onCancelar={() => setMostrarFormulario(false)}
-        />
-      )}
-    </div>
+      {/* Modal */ }
+  {
+    mostrarFormulario && (
+      <EmpleadoForm
+        onGuardar={guardarEmpleado}
+        onCancelar={() => setMostrarFormulario(false)}
+      />
+    )
+  }
+    </div >
   );
 }
