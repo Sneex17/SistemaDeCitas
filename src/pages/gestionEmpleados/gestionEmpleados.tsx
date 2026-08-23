@@ -18,12 +18,7 @@ useEffect(() => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   const guardarEmpleado = (nuevoEmpleado: Omit<Empleado, "IdEmpleado">) => {
-    const empleado: Empleado = {
-      IdEmpleado: Empleados.length + 1,
-      ...nuevoEmpleado,
-    };
-    console.log(nuevoEmpleado);
-    //setEmpleados([...Empleados, empleado]);
+    console.log(nuevoEmpleado)
     setMostrarFormulario(false);
   };
 

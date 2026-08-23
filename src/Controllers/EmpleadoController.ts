@@ -1,4 +1,5 @@
-import { Supabase } from '../services/Supabase'
+import { Supabase } from '../services/Supabase';
+import { type Empleado } from "../entities/Empleado";
 
 export interface EmpleadoDetalle {
     IdEmpleado: number;
@@ -54,4 +55,35 @@ export async function ListaEmpleados(): Promise<EmpleadoDetalle[]> {
         console.error('Error fetching empleados', err.message);
     }
     return [];
+}
+
+export async function GuardarEmpleado(empleado: Empleado): Promise<boolean> {
+  try {
+    const { error } = await Supabase
+      .from('empleado')
+      .insert([
+        {
+          nombre: empleado.Nombre,
+          apellido: empleado.Apellido,
+          idsexo: empleado.IdSexo,
+          idnacionalidad: empleado.IdNacionalidad,
+          idestadocivil: empleado.IdEstadoCivil,
+          fechanacimiento: empleado.FechaNacimiento,
+          telefono: empleado.Telefono,
+          direccion: empleado.Direccion,
+          idrol: empleado.IdRol,
+          idestado: empleado.IdEstado,
+        },
+      ]);
+
+    if (error) {
+      throw error;
+    }
+
+    return true;
+
+  } catch (err: any) {
+    console.error('Error al guardar empleado:', err.message);
+    return false;
+  }
 }

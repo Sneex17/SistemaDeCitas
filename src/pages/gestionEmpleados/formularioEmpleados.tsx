@@ -11,11 +11,10 @@ import { type Estado } from "../../entities/Estado";
 import { type EstadoCivil } from "../../entities/EstadoCivil";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import {type Empleado } from "../../entities/Empleado"
-
+import { type Empleado } from "../../entities/Empleado";
+import { GuardarEmpleado } from "../../Controllers/EmpleadoController";
 
 const Alertas = withReactContent(Swal);
-
 
 interface EmpleadoFormProps {
   onGuardar: (empleado: Empleado) => void;
@@ -53,8 +52,7 @@ export default function EmpleadoForm({
     }));
   };
 
-  const guardarEmpleado = () => {
-    console.log(nuevoEmpleado)
+  const guardarEmpleado = async () => {
     if (
       !nuevoEmpleado.Nombre ||
       !nuevoEmpleado.Apellido ||
@@ -64,9 +62,26 @@ export default function EmpleadoForm({
       Alertas.fire({
         title: <p>Campo requeridos</p>,
         icon: "warning",
-        text: "Favor de llenar los campos faltantes!"
-      })
+        text: "Favor de llenar los campos faltantes!",
+      });
       return;
+    } else {
+      const result = await GuardarEmpleado(nuevoEmpleado);
+
+      if (result) {
+        Alertas.fire({
+          title: "¡Éxito!",
+          text: "Empleado registrado correctamente",
+          icon: "success",
+        });
+        onGuardar(nuevoEmpleado);
+      } else {
+        Alertas.fire({
+          title: "Error",
+          text: "No se pudo guardar el empleado en la base de datos",
+          icon: "error",
+        });
+      }
     }
 
     onGuardar(nuevoEmpleado);
