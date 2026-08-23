@@ -4,7 +4,7 @@ import Citas from "../pages/Citas/citas";
 import GestionarCuenta from "../pages/GestionCuenta/GestionarCuenta";
 import Clientes from "../pages/Clientes/clientes";
 import GestionEmpleados from "../pages/gestionEmpleados/gestionEmpleados";
-// import Servicios from "../pages/Servicios";
+import GestionServicios from "../pages/Servicios/gestionServicio";
 
 
 interface AppRoutesProps {
@@ -27,7 +27,7 @@ export function AppRoutes({ usuario, onLogout }: AppRoutesProps) {
         path="/gestionar-cuenta"
         element={<GestionarCuenta usuario={usuario} />}
       />
-      {/* <Route path="/servicios" element={<Servicios />} /> */}
+       <Route path="/servicios" element={<GestionServicios />} /> 
        <Route path="/clientes" element={<Clientes />} /> 
        <Route path="/empleados" element={<GestionEmpleados />} />
 
