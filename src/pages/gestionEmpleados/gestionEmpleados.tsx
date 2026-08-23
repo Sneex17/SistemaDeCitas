@@ -1,86 +1,42 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EmpleadoForm from "./formularioEmpleados";
 import "./gestionEmpleados.css";
-
-interface Empleado {
-  IdEmpleado: number;
-  Nombre: string;
-  Apellido: string;
-  Sexo: string;
-  Nacionalidad: string;
-  FechaNacimiento: string;
-  Telefono: string;
-  Direccion: string;
-  Email: string;
-  Cargo: string;
-  FechaIngreso: string;
-  Estado: string;
-}
-
-const empleadosIniciales: Empleado[] = [
-  {
-    IdEmpleado: 1,
-    Nombre: "Laura",
-    Apellido: "Gómez",
-    Sexo: "Femenino",
-    Nacionalidad: "Dominicana",
-    FechaNacimiento: "1993-04-15",
-    Telefono: "809-555-1234",
-    Direccion: "Santo Domingo",
-    Email: "laura.gomez@gmail.com",
-    Cargo: "Recepcionista",
-    FechaIngreso: "2024-01-10",
-    Estado: "Activo",
-  },
-  {
-    IdEmpleado: 2,
-    Nombre: "José",
-    Apellido: "Martínez",
-    Sexo: "Masculino",
-    Nacionalidad: "Dominicana",
-    FechaNacimiento: "1990-09-22",
-    Telefono: "809-555-5678",
-    Direccion: "Santo Domingo",
-    Email: "jose.martinez@gmail.com",
-    Cargo: "Estilista",
-    FechaIngreso: "2023-08-05",
-    Estado: "Activo",
-  },
-];
+import {
+  type EmpleadoDetalle,
+  ListaEmpleados,
+} from "../../Controllers/EmpleadoController";
 
 export default function GestionEmpleados() {
-  const [empleados, setEmpleados] =
-    useState<Empleado[]>(empleadosIniciales);
 
-  const [mostrarFormulario, setMostrarFormulario] =
-    useState(false);
+  const [Empleados, setEmpleados] = useState<EmpleadoDetalle[]>([]);
+useEffect(() => {
+  ListaEmpleados().then(setEmpleados);
+}, []);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
-  const guardarEmpleado = (nuevoEmpleado: Omit<Empleado, "IdEmpleado">) => {
-    const empleado: Empleado = {
-      IdEmpleado: empleados.length + 1,
+  const guardarEmpleado = (nuevoEmpleado: Omit<EmpleadoDetalle, "IdEmpleado">) => {
+    const empleado: EmpleadoDetalle = {
+      IdEmpleado: Empleados.length + 1,
       ...nuevoEmpleado,
     };
 
-    setEmpleados([...empleados, empleado]);
+    setEmpleados([...Empleados, empleado]);
     setMostrarFormulario(false);
   };
 
   return (
     <div className="empleados-container">
-
       {/* Encabezado */}
       <header className="empleados-header">
         <div>
-          <span className="empleados-subtitle">
-            SISTEMA DE CITAS
-          </span>
+          <span className="empleados-subtitle">SISTEMA DE CITAS</span>
 
           <h1>Gestión de Empleados</h1>
 
           <p>
-            Consulta y administra la información de los
-            empleados registrados en el sistema.
+            Consulta y administra la información de los empleados registrados en
+            el sistema.
           </p>
         </div>
 
@@ -109,17 +65,18 @@ export default function GestionEmpleados() {
               <th>ID</th>
               <th>Nombre</th>
               <th>Apellido</th>
+              <th>Sexo</th>
               <th>Teléfono</th>
-              <th>Email</th>
+              <th>Estado Civil</th>
               <th>Cargo</th>
-              <th>Fecha Ingreso</th>
+              <th>Direccion</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
 
           <tbody>
-            {empleados.map((empleado) => (
+            {Empleados.map((empleado) => (
               <tr key={empleado.IdEmpleado}>
                 <td>{empleado.IdEmpleado}</td>
 
@@ -127,13 +84,15 @@ export default function GestionEmpleados() {
 
                 <td>{empleado.Apellido}</td>
 
+                <td>{empleado.Sexo}</td>
+
                 <td>{empleado.Telefono}</td>
 
-                <td>{empleado.Email}</td>
+                <td>{empleado.EstadoCivil}</td>
 
-                <td>{empleado.Cargo}</td>
+                <td>{empleado.Rol}</td>
 
-                <td>{empleado.FechaIngreso}</td>
+                <td>{empleado.Direccion}</td>
 
                 <td>
                   <span
@@ -148,13 +107,9 @@ export default function GestionEmpleados() {
                 </td>
 
                 <td>
-                  <button className="btn-editar">
-                    Editar
-                  </button>
+                  <button className="btn-editar">Editar</button>
 
-                  <button className="btn-eliminar">
-                    Eliminar
-                  </button>
+                  <button className="btn-eliminar">Eliminar</button>
                 </td>
               </tr>
             ))}

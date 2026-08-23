@@ -1,5 +1,14 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { ListaSexos } from "../../Controllers/SexoController";
+import { ListaNacionalidades } from "../../Controllers/NacionalidadController";
+import { ListaRoles } from "../../Controllers/RolController";
+import { ListaEstadosEmpleados } from "../../Controllers/EstadoController";
+import { ListaEstadoCivil} from "../../Controllers/ControllerEstadoCivil"
+import { type Rol } from "../../entities/Rol";
+import { type Nacionalidad } from "../../entities/Nacionalidad";
+import { type Sexo } from "../../entities/Sexo";
+import { type Estado } from "../../entities/Estado";
+import { type EstadoCivil} from "../../entities/EstadoCivil"
 interface EmpleadoFormData {
   Nombre: string;
   Apellido: string;
@@ -23,25 +32,24 @@ export default function EmpleadoForm({
   onGuardar,
   onCancelar,
 }: EmpleadoFormProps) {
-  const [nuevoEmpleado, setNuevoEmpleado] =
-    useState<EmpleadoFormData>({
-      Nombre: "",
-      Apellido: "",
-      Sexo: "",
-      Nacionalidad: "",
-      FechaNacimiento: "",
-      Telefono: "",
-      Direccion: "",
-      Email: "",
-      Cargo: "",
-      FechaIngreso: "",
-      Estado: "Activo",
-    });
+  const [nuevoEmpleado, setNuevoEmpleado] = useState<EmpleadoFormData>({
+    Nombre: "",
+    Apellido: "",
+    Sexo: "",
+    Nacionalidad: "",
+    FechaNacimiento: "",
+    Telefono: "",
+    Direccion: "",
+    Email: "",
+    Cargo: "",
+    FechaIngreso: "",
+    Estado: "Activo",
+  });
 
   const manejarCambio = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
 
@@ -66,31 +74,49 @@ export default function EmpleadoForm({
     onGuardar(nuevoEmpleado);
   };
 
+  const [sexos, setSexos] = useState<Sexo[]>([]);
+  useEffect(() => {
+    ListaSexos().then(setSexos);
+  }, []);
+
+  const [nacionalidad, setNacionalidad] = useState<Nacionalidad[]>([]);
+  useEffect(() => {
+    ListaNacionalidades().then(setNacionalidad);
+  }, []);
+
+  const [rol, setRol] = useState<Rol[]>([]);
+  useEffect(() => {
+    ListaRoles().then(setRol);
+  }, []);
+
+  const [estado, setEstado] = useState<Estado[]>([]);
+  useEffect(() => {
+    ListaEstadosEmpleados().then(setEstado);
+  }, []);
+
+  const [estadoCivil, setEstadoCivil] = useState<EstadoCivil[]>([]);
+  useEffect(() => {
+    ListaEstadoCivil().then(setEstadoCivil);
+  }, []);
+
   return (
     <div className="modal-overlay">
       <div className="modal-empleado">
-
         {/* Encabezado */}
         <div className="modal-empleado-header">
           <div>
             <h2>Nuevo Empleado</h2>
 
-            <p>
-              Registre la información del nuevo empleado
-            </p>
+            <p>Registre la información del nuevo empleado</p>
           </div>
 
-          <button
-            className="btn-cerrar-modal"
-            onClick={onCancelar}
-          >
+          <button className="btn-cerrar-modal" onClick={onCancelar}>
             ×
           </button>
         </div>
 
         {/* Formulario */}
         <div className="formulario-empleado">
-
           {/* Nombre */}
           <div className="campo-empleado">
             <label>Nombre *</label>
@@ -126,17 +152,12 @@ export default function EmpleadoForm({
               value={nuevoEmpleado.Sexo}
               onChange={manejarCambio}
             >
-              <option value="">
-                Seleccione el sexo
-              </option>
-
-              <option value="Femenino">
-                Femenino
-              </option>
-
-              <option value="Masculino">
-                Masculino
-              </option>
+              <option value="">Seleccione el sexo</option>
+              {sexos.map((s) => (
+                <option key={s.IdSexo} value={s.IdSexo}>
+                  {s.Sexo}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -149,29 +170,30 @@ export default function EmpleadoForm({
               value={nuevoEmpleado.Nacionalidad}
               onChange={manejarCambio}
             >
-              <option value="">
-                Seleccione la nacionalidad
-              </option>
+              <option value="">Seleccione la nacionalidad</option>
+              {nacionalidad.map((n) => (
+                <option key={n.IdNacionalidad} value={n.IdNacionalidad}>
+                  {n.Nacionalidad}
+                </option>
+              ))}
+            </select>
+          </div>
 
-              <option value="Dominicana">
-                Dominicana
-              </option>
+          {/* EstadoCivil */}
+          <div className="campo-empleado">
+            <label>Estado Civil</label>
 
-              <option value="Estadounidense">
-                Estadounidense
-              </option>
-
-              <option value="Colombiana">
-                Colombiana
-              </option>
-
-              <option value="Venezolana">
-                Venezolana
-              </option>
-
-              <option value="Española">
-                Española
-              </option>
+            <select
+              name="Nacionalidad"
+              value={nuevoEmpleado.Nacionalidad}
+              onChange={manejarCambio}
+            >
+              <option value="">Seleccione el estado civil</option>
+              {estadoCivil.map((e) => (
+                <option key={e.IdEstadoCivil} value={e.IdEstadoCivil}>
+                  {e.EstadoCivil}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -234,33 +256,12 @@ export default function EmpleadoForm({
               value={nuevoEmpleado.Cargo}
               onChange={manejarCambio}
             >
-              <option value="">
-                Seleccione el cargo
-              </option>
-
-              <option value="Recepcionista">
-                Recepcionista
-              </option>
-
-              <option value="Estilista">
-                Estilista
-              </option>
-
-              <option value="Manicurista">
-                Manicurista
-              </option>
-
-              <option value="Barbero">
-                Barbero
-              </option>
-
-              <option value="Masajista">
-                Masajista
-              </option>
-
-              <option value="Administrador">
-                Administrador
-              </option>
+              <option value="">Seleccione el cargo</option>
+              {rol.map((r) => (
+                <option key={r.IdRol} value={r.IdRol}>
+                  {r.Rol}{" "}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -285,34 +286,25 @@ export default function EmpleadoForm({
               value={nuevoEmpleado.Estado}
               onChange={manejarCambio}
             >
-              <option value="Activo">
-                Activo
-              </option>
-
-              <option value="Inactivo">
-                Inactivo
-              </option>
+              {estado.map((e) => (
+                <option key={e.IdEstado} value={e.IdEstado}>
+                  {e.Estado}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
         {/* Botones */}
         <div className="modal-empleado-actions">
-          <button
-            className="btn-cancelar-empleado"
-            onClick={onCancelar}
-          >
+          <button className="btn-cancelar-empleado" onClick={onCancelar}>
             Cancelar
           </button>
 
-          <button
-            className="btn-guardar-empleado"
-            onClick={guardarEmpleado}
-          >
+          <button className="btn-guardar-empleado" onClick={guardarEmpleado}>
             Guardar Empleado
           </button>
         </div>
-
       </div>
     </div>
   );
