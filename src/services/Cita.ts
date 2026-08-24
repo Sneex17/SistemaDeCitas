@@ -1,10 +1,11 @@
 export interface Cita{
-    IdCIta: number;
+    IdCIta?: number;
     IdCliente: number;
     IdEmpleado: number;
-    Fecha: Date;
-    Hora: Date;
-    Descripcion: string;
+    IdServicio: number;
+    Fecha: string;
+    Hora: string;
+    Descripcion?: string;
     PrecioTotal: number;
     IdEstado: number;
 }
