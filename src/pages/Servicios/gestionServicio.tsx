@@ -8,8 +8,6 @@ import {
   DesactivarServicio,
 } from "../../Controllers/ServiciosController";
 
-import { type Servicios } from "../../services/Servicios";
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -17,18 +15,28 @@ const Alertas = withReactContent(Swal);
 
 export default function GestionServicios() {
   const [servicios, setServicios] = useState<ServicioDetalle[]>([]);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [servicioAEditar, setServicioAEditar] = useState<ServicioDetalle | null>(null);
 
   const cargarServicios = () => {
     ListaServicio().then(setServicios);
   };
-  console.log(servicios);
+
   useEffect(() => {
     cargarServicios();
   }, []);
 
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const abrirCrear = () => {
+    setServicioAEditar(null);
+    setMostrarFormulario(true);
+  };
 
-  const guardarServicio = (_nuevoServicio: Servicios) => {
+  const abrirEditar = (servicio: ServicioDetalle) => {
+    setServicioAEditar(servicio);
+    setMostrarFormulario(true);
+  };
+
+  const guardarServicio = () => {
     setMostrarFormulario(false);
     cargarServicios();
   };
@@ -52,8 +60,8 @@ export default function GestionServicios() {
             prev.map((servicio) =>
               servicio.IdServicio === idServicio
                 ? { ...servicio, Estado: "Inactivo" }
-                : servicio,
-            ),
+                : servicio
+            )
           );
 
           Alertas.fire({
@@ -96,10 +104,7 @@ export default function GestionServicios() {
       <section className="servicios-actions">
         <h2>Servicios registrados</h2>
 
-        <button
-          className="btn-nuevo-servicio"
-          onClick={() => setMostrarFormulario(true)}
-        >
+        <button className="btn-nuevo-servicio" onClick={abrirCrear}>
           + Nuevo Servicio
         </button>
       </section>
@@ -121,11 +126,8 @@ export default function GestionServicios() {
             {servicios.map((servicio) => (
               <tr key={servicio.IdServicio}>
                 <td>{servicio.IdServicio}</td>
-
                 <td>{servicio.Nombre}</td>
-
                 <td>{servicio.Precio}</td>
-
                 <td>
                   <span
                     className={
@@ -137,9 +139,13 @@ export default function GestionServicios() {
                     {servicio.Estado}
                   </span>
                 </td>
-
                 <td>
-                  <button className="btn-editar">Editar</button>
+                  <button
+                    className="btn-editar"
+                    onClick={() => abrirEditar(servicio)}
+                  >
+                    Editar
+                  </button>
 
                   <button
                     className="btn-eliminar"
@@ -154,9 +160,10 @@ export default function GestionServicios() {
         </table>
       </section>
 
-      {/* Modal */}
+      {/* Modal Formulario */}
       {mostrarFormulario && (
         <ServicioForm
+          servicioAEditar={servicioAEditar}
           onGuardar={guardarServicio}
           onCancelar={() => setMostrarFormulario(false)}
         />

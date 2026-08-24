@@ -49,20 +49,34 @@ export async function ListaServicio(): Promise<ServicioDetalle[]> {
 export async function GuardarServicio(servicio: Servicios): Promise<boolean> {
 
     try {
-        const { error } = await Supabase
-            .from("servicios")
-            .insert([
-                {
+        if (servicio.IdServicio == 0) {
+            const { error } = await Supabase
+                .from("servicios")
+                .insert([
+                    {
+                        nombre: servicio.Nombre,
+                        precio: servicio.Precio,
+                        idestado: servicio.IdEstado,
+                    },
+                ]);
+
+            if (error) {
+                console.error("Error al insertar servicio:", error.message);
+                return false;
+            }
+        } else {
+            const { error } = await Supabase
+                .from('servicios')
+                .update({
                     nombre: servicio.Nombre,
                     precio: servicio.Precio,
                     idestado: servicio.IdEstado,
-                },
-            ]);
+                })
+                .eq('idservicio', servicio.IdServicio);
 
-        if (error) {
-            console.error("Error al insertar servicio:", error.message);
-            return false;
+            if (error) throw error;
         }
+
 
         return true;
     } catch (err) {

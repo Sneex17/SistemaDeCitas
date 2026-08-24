@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import "../Servicios/gestionServicio.css";
 import { ListaEstadosEmpleados } from "../../Controllers/EstadoController";
-import { GuardarServicio } from "../../Controllers/ServiciosController";
+import {
+  GuardarServicio,
+  type ServicioDetalle,
+} from "../../Controllers/ServiciosController";
 import { type Estado } from "../../entities/Estado";
 import { type Servicios } from "../../services/Servicios";
 import Swal from "sweetalert2";
@@ -10,25 +13,44 @@ import withReactContent from "sweetalert2-react-content";
 const Alertas = withReactContent(Swal);
 
 interface ServicioFormProps {
+  servicioAEditar?: ServicioDetalle | null;
   onGuardar: (servicio: Servicios) => void;
   onCancelar: () => void;
 }
 
 export default function ServicioForm({
+  servicioAEditar,
   onGuardar,
   onCancelar,
 }: ServicioFormProps) {
-  const [nuevoServicio, setNuevoServicio] = useState<Omit<Servicios, "IdServicio">>({
+  const [estado, setEstado] = useState<Estado[]>([]);
+
+  const [nuevoServicio, setNuevoServicio] = useState<Servicios>({
     Nombre: "",
     Precio: 0,
     IdEstado: 0,
   });
 
-  const [estado, setEstado] = useState<Estado[]>([]);
-
+  // Cargar lista de estados
   useEffect(() => {
     ListaEstadosEmpleados().then(setEstado);
   }, []);
+
+  // Precargar datos si se pasa un servicio a editar
+  useEffect(() => {
+    if (servicioAEditar && estado.length > 0) {
+      const estadoEncontrado = estado.find(
+        (e) => e.Estado === servicioAEditar.Estado
+      );
+
+      setNuevoServicio({
+        IdServicio: servicioAEditar.IdServicio,
+        Nombre: servicioAEditar.Nombre,
+        Precio: servicioAEditar.Precio,
+        IdEstado: estadoEncontrado ? estadoEncontrado.IdEstado : 0,
+      });
+    }
+  }, [servicioAEditar, estado]);
 
   const manejarCambio = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -55,15 +77,17 @@ export default function ServicioForm({
       return;
     }
 
-    const result = await GuardarServicio(nuevoServicio as Servicios);
+    const result = await GuardarServicio(nuevoServicio);
 
     if (result) {
       Alertas.fire({
         title: "¡Éxito!",
-        text: "Servicio registrado correctamente",
+        text: servicioAEditar
+          ? "Servicio actualizado correctamente"
+          : "Servicio registrado correctamente",
         icon: "success",
       });
-      onGuardar(nuevoServicio as Servicios);
+      onGuardar(nuevoServicio);
     } else {
       Alertas.fire({
         title: "Error",
@@ -79,8 +103,12 @@ export default function ServicioForm({
         {/* Encabezado */}
         <div className="modal-servicio-header">
           <div>
-            <h2>Nuevo Servicio</h2>
-            <p>Registre la información del nuevo servicio</p>
+            <h2>{servicioAEditar ? "Editar Servicio" : "Nuevo Servicio"}</h2>
+            <p>
+              {servicioAEditar
+                ? "Actualice la información del servicio"
+                : "Registre la información del nuevo servicio"}
+            </p>
           </div>
 
           <button className="btn-cerrar-modal" onClick={onCancelar}>
@@ -140,7 +168,7 @@ export default function ServicioForm({
           </button>
 
           <button className="btn-guardar-servicio" onClick={guardarServicio}>
-            Guardar Servicio
+            {servicioAEditar ? "Actualizar Servicio" : "Guardar Servicio"}
           </button>
         </div>
       </div>
