@@ -14,15 +14,33 @@ const Alertas = withReactContent(Swal);
 
 export default function Clientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [clientes, setCliente] = useState<ClienteDetalle[]>([]);
+  const [clienteAEditar, setClienteAEditar] = useState<ClienteDetalle | null>(
+    null,
+  );
+  const [clientes, setClientes] = useState<ClienteDetalle[]>([]);
+
+  const cargarClientes = () => {
+    ListaClientes().then(setClientes);
+  };
+
   useEffect(() => {
-    ListaClientes().then(setCliente);
+    cargarClientes();
   }, []);
+
+  const abrirCrear = () => {
+    setClienteAEditar(null);
+    setMostrarFormulario(true);
+  };
+
+  const abrirEditar = (cliente: ClienteDetalle) => {
+    setClienteAEditar(cliente);
+    setMostrarFormulario(true);
+  };
 
   const manejarEliminar = (idcliente: number) => {
     Alertas.fire({
-      title: "¿Inactivar empleado?",
-      text: "El estado del empleado cambiará a Inactivo.",
+      title: "¿Inactivar cliente?",
+      text: "El estado del cliente cambiará a Inactivo.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -34,11 +52,9 @@ export default function Clientes() {
         const exito = await DesactivarCliente(idcliente);
 
         if (exito) {
-          setCliente((prev) =>
-            prev.map((cliente) =>
-              cliente.IdCliente === idcliente
-                ? { ...cliente, Estado: "Inactivo" }
-                : cliente,
+          setClientes((prev) =>
+            prev.map((c) =>
+              c.IdCliente === idcliente ? { ...c, Estado: "Inactivo" } : c,
             ),
           );
 
@@ -57,6 +73,7 @@ export default function Clientes() {
       }
     });
   };
+
   return (
     <div className="clientes-container">
       <header className="clientes-header">
@@ -80,10 +97,7 @@ export default function Clientes() {
       <section className="clientes-actions">
         <h2>Clientes registrados</h2>
 
-        <button
-          className="btn-nuevo-cliente"
-          onClick={() => setMostrarFormulario(true)}
-        >
+        <button className="btn-nuevo-cliente" onClick={abrirCrear}>
           + Nuevo Cliente
         </button>
       </section>
@@ -96,6 +110,7 @@ export default function Clientes() {
               <th>ID</th>
               <th>Nombre</th>
               <th>Apellido</th>
+              <th>Sexo</th>
               <th>Teléfono</th>
               <th>Email</th>
               <th>Nacionalidad</th>
@@ -128,7 +143,12 @@ export default function Clientes() {
                 </td>
 
                 <td>
-                  <button className="btn-editar">Editar</button>
+                  <button
+                    className="btn-editar"
+                    onClick={() => abrirEditar(cliente)}
+                  >
+                    Editar
+                  </button>
 
                   <button
                     className="btn-eliminar"
@@ -143,11 +163,12 @@ export default function Clientes() {
         </table>
       </section>
 
-      {/* Formulario */}
+      {/* Formulario Modal */}
       {mostrarFormulario && (
         <ClienteForm
-          onGuardar={(cliente) => {
-            console.log("Cliente guardado:", cliente);
+          clienteAEditar={clienteAEditar}
+          onGuardar={() => {
+            cargarClientes();
             setMostrarFormulario(false);
           }}
           onCancelar={() => {

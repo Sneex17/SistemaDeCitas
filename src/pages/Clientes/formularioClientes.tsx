@@ -7,10 +7,14 @@ import { type Nacionalidad } from "../../entities/Nacionalidad";
 import { ListaEstadosEmpleados } from "../../Controllers/EstadoController";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { GuardarCliente } from "../../Controllers/ClienteController";
+import {
+  GuardarCliente,
+  type ClienteDetalle,
+} from "../../Controllers/ClienteController";
 import type { Cliente } from "../../entities/Cliente";
 
 interface ClienteFormProps {
+  clienteAEditar?: ClienteDetalle | null;
   onGuardar: (cliente: Cliente) => void;
   onCancelar: () => void;
 }
@@ -18,9 +22,14 @@ interface ClienteFormProps {
 const Alertas = withReactContent(Swal);
 
 export default function ClienteForm({
+  clienteAEditar,
   onGuardar,
   onCancelar,
 }: ClienteFormProps) {
+  const [sexos, setSexo] = useState<Sexo[]>([]);
+  const [nacionalidad, setNacionalidad] = useState<Nacionalidad[]>([]);
+  const [estado, setEstado] = useState<Estado[]>([]);
+
   const [nuevoCliente, setNuevoCliente] = useState<Cliente>({
     Nombre: "",
     Apellido: "",
@@ -34,36 +43,59 @@ export default function ClienteForm({
     IdEstado: 0,
   });
 
-  const [sexos, setSexo] = useState<Sexo[]>([]);
+  // Cargar catálogos
   useEffect(() => {
     ListaSexos().then(setSexo);
-  }, []);
-
-  const [nacionalidad, setNacionalidad] = useState<Nacionalidad[]>([]);
-  useEffect(() => {
     ListaNacionalidades().then(setNacionalidad);
-  }, []);
-
-  const [estado, setEstado] = useState<Estado[]>([]);
-  useEffect(() => {
     ListaEstadosEmpleados().then(setEstado);
   }, []);
+
+  // Precargar datos si se está editando
+  useEffect(() => {
+    if (
+      clienteAEditar &&
+      sexos.length > 0 &&
+      nacionalidad.length > 0 &&
+      estado.length > 0
+    ) {
+      const sexoEncontrado = sexos.find((s) => s.Sexo === clienteAEditar.Sexo);
+      const nacEncontrada = nacionalidad.find(
+        (n) => n.Nacionalidad === clienteAEditar.Nacionalidad,
+      );
+      const estadoEncontrado = estado.find(
+        (e) => e.Estado === clienteAEditar.Estado,
+      );
+
+      setNuevoCliente({
+        IdCliente: clienteAEditar.IdCliente,
+        Nombre: clienteAEditar.Nombre,
+        Apellido: clienteAEditar.Apellido,
+        Telefono: clienteAEditar.Telefono,
+        Direccion: clienteAEditar.Direccion || "",
+        Email: clienteAEditar.Email,
+        Contrasena: "",
+        IdSexo: sexoEncontrado ? sexoEncontrado.IdSexo : 0,
+        IdNacionalidad: nacEncontrada ? nacEncontrada.IdNacionalidad : 0,
+        IdEstado: estadoEncontrado ? estadoEncontrado.IdEstado : 0,
+        FechaNacimiento: clienteAEditar.FechaNacimiento || "",
+      });
+    }
+  }, [clienteAEditar, sexos, nacionalidad, estado]);
 
   const manejarCambio = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
 
-    setNuevoCliente({
-      ...nuevoCliente,
+    setNuevoCliente((prev) => ({
+      ...prev,
       [name]: name.startsWith("Id") ? Number(value) : value,
-    });
+    }));
   };
 
   const guardarCliente = async () => {
-    console.log(nuevoCliente);
     if (
       !nuevoCliente.Nombre ||
       !nuevoCliente.Apellido ||
@@ -83,7 +115,9 @@ export default function ClienteForm({
     if (result) {
       Alertas.fire({
         title: "¡Éxito!",
-        text: "Cliente registrado correctamente",
+        text: clienteAEditar
+          ? "Cliente actualizado correctamente"
+          : "Cliente registrado correctamente",
         icon: "success",
       });
       onGuardar(nuevoCliente);
@@ -96,14 +130,17 @@ export default function ClienteForm({
     }
   };
 
-  // El return DEL COMPONENTE va aquí afuera
   return (
     <div className="modal-overlay">
       <div className="modal-cliente">
         <div className="modal-cliente-header">
           <div>
-            <h2>Nuevo Cliente</h2>
-            <p>Registre la información del nuevo cliente</p>
+            <h2>{clienteAEditar ? "Editar Cliente" : "Nuevo Cliente"}</h2>
+            <p>
+              {clienteAEditar
+                ? "Actualice la información del cliente"
+                : "Registre la información del nuevo cliente"}
+            </p>
           </div>
 
           <button className="btn-cerrar-modal" onClick={onCancelar}>
@@ -216,7 +253,11 @@ export default function ClienteForm({
               name="Contrasena"
               value={nuevoCliente.Contrasena}
               onChange={manejarCambio}
-              placeholder="Ingrese la contraseña"
+              placeholder={
+                clienteAEditar
+                  ? "Dejar en blanco para mantener la actual"
+                  : "Ingrese la contraseña"
+              }
             />
           </div>
 
@@ -244,7 +285,7 @@ export default function ClienteForm({
           </button>
 
           <button className="btn-guardar-cliente" onClick={guardarCliente}>
-            Guardar Cliente
+            {clienteAEditar ? "Actualizar Cliente" : "Guardar Cliente"}
           </button>
         </div>
       </div>
