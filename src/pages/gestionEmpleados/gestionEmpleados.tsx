@@ -8,8 +8,6 @@ import {
   DesactivarEmpleado,
 } from "../../Controllers/EmpleadoController";
 
-import { type Empleado } from "../../entities/Empleado";
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -17,15 +15,33 @@ const Alertas = withReactContent(Swal);
 
 export default function GestionEmpleados() {
   const [Empleados, setEmpleados] = useState<EmpleadoDetalle[]>([]);
-  useEffect(() => {
-    ListaEmpleados().then(setEmpleados);
-  }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [empleadoEditar, setEmpleadoEditar] = useState<EmpleadoDetalle | null>(null);
 
-  const guardarEmpleado = (nuevoEmpleado: Omit<Empleado, "IdEmpleado">) => {
-    //console.log(nuevoEmpleado)
-    setMostrarFormulario(false);
+  const cargarEmpleados = () => {
+    ListaEmpleados().then(setEmpleados);
   };
+
+  useEffect(() => {
+    cargarEmpleados();
+  }, []);
+
+  const abrirNuevoModal = () => {
+    setEmpleadoEditar(null);
+    setMostrarFormulario(true);
+  };
+
+  const manejarEditar = (empleado: EmpleadoDetalle) => {
+    setEmpleadoEditar(empleado);
+    setMostrarFormulario(true);
+  };
+
+  const guardarEmpleado = () => {
+    setMostrarFormulario(false);
+    setEmpleadoEditar(null);
+    cargarEmpleados();
+  };
+
   const manejarEliminar = (idEmpleado: number) => {
     Alertas.fire({
       title: "¿Inactivar empleado?",
@@ -45,8 +61,8 @@ export default function GestionEmpleados() {
             prev.map((emp) =>
               emp.IdEmpleado === idEmpleado
                 ? { ...emp, Estado: "Inactivo" }
-                : emp,
-            ),
+                : emp
+            )
           );
 
           Alertas.fire({
@@ -64,15 +80,14 @@ export default function GestionEmpleados() {
       }
     });
   };
+
   return (
     <div className="empleados-container">
       {/* Encabezado */}
       <header className="empleados-header">
         <div>
           <span className="empleados-subtitle">SISTEMA DE CITAS</span>
-
           <h1>Gestión de Empleados</h1>
-
           <p>
             Consulta y administra la información de los empleados registrados en
             el sistema.
@@ -87,11 +102,7 @@ export default function GestionEmpleados() {
       {/* Acciones */}
       <section className="empleados-actions">
         <h2>Empleados registrados</h2>
-
-        <button
-          className="btn-nuevo-empleado"
-          onClick={() => setMostrarFormulario(true)}
-        >
+        <button className="btn-nuevo-empleado" onClick={abrirNuevoModal}>
           + Nuevo Empleado
         </button>
       </section>
@@ -108,7 +119,7 @@ export default function GestionEmpleados() {
               <th>Teléfono</th>
               <th>Estado Civil</th>
               <th>Cargo</th>
-              <th>Direccion</th>
+              <th>Dirección</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -118,19 +129,12 @@ export default function GestionEmpleados() {
             {Empleados.map((empleado) => (
               <tr key={empleado.IdEmpleado}>
                 <td>{empleado.IdEmpleado}</td>
-
                 <td>{empleado.Nombre}</td>
-
                 <td>{empleado.Apellido}</td>
-
                 <td>{empleado.Sexo}</td>
-
                 <td>{empleado.Telefono}</td>
-
                 <td>{empleado.EstadoCivil}</td>
-
                 <td>{empleado.Rol}</td>
-
                 <td>{empleado.Direccion}</td>
 
                 <td>
@@ -146,7 +150,12 @@ export default function GestionEmpleados() {
                 </td>
 
                 <td>
-                  <button className="btn-editar">Editar</button>
+                  <button
+                    className="btn-editar"
+                    onClick={() => manejarEditar(empleado)}
+                  >
+                    Editar
+                  </button>
 
                   <button
                     className="btn-eliminar"
@@ -164,8 +173,12 @@ export default function GestionEmpleados() {
       {/* Modal */}
       {mostrarFormulario && (
         <EmpleadoForm
+          empleadoAEditar={empleadoEditar}
           onGuardar={guardarEmpleado}
-          onCancelar={() => setMostrarFormulario(false)}
+          onCancelar={() => {
+            setMostrarFormulario(false);
+            setEmpleadoEditar(null);
+          }}
         />
       )}
     </div>
