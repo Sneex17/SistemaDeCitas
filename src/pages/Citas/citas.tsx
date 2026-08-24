@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./citas.css";
+import { ListaEmpleados, type EmpleadoDetalle } from "../../Controllers/EmpleadoController";
+import { type ServicioDetalle, ListaServicio } from "../../Controllers/ServiciosController";
+import { type ClienteDetalle, ListaClientes } from "../../Controllers/ClienteController";
 
 interface Cita {
   idCita: number;
@@ -15,6 +18,33 @@ interface Cita {
 }
 
 export default function Citas() {
+  const [Empleados, setEmpleados] = useState<EmpleadoDetalle[]>([]);
+  useEffect(() => {
+    ListaEmpleados().then(setEmpleados);
+  }, []);
+
+  const [servicios, setServicios] = useState<ServicioDetalle[]>([]);
+  useEffect(() => {
+    ListaServicio().then(setServicios);
+  }, []);
+
+  const [clientes, setCliente] = useState<ClienteDetalle[]>([]);
+  useEffect(() => {
+    ListaClientes().then(setCliente);
+  }, []);
+
+  // Estados para el servicio seleccionado y su precio dinámico
+  const [idServicioSeleccionado, setIdServicioSeleccionado] = useState<number | "">("");
+  const [precioTotal, setPrecioTotal] = useState<number | "">("");
+
+  const manejarCambioServicio = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = Number(e.target.value);
+    setIdServicioSeleccionado(id);
+
+    const servicioEncontrado = servicios.find((s) => s.IdServicio === id);
+    setPrecioTotal(servicioEncontrado ? servicioEncontrado.Precio : "");
+  };
+
   const [citas, setCitas] = useState<Cita[]>([
     {
       idCita: 1,
@@ -47,11 +77,9 @@ export default function Citas() {
       <header className="citas-header">
         <div>
           <h1>Gestión de Citas</h1>
-          <p>
-            Administración y control de las citas del sistema
-          </p>
+          <p>Administración y control de las citas del sistema</p>
         </div>
-        
+
         <button
           onClick={() => setMostrarFormulario(true)}
           className="btn-nueva-cita"
@@ -70,10 +98,7 @@ export default function Citas() {
             className="input-filtro"
           />
 
-          <input
-            type="date"
-            className="input-filtro"
-          />
+          <input type="date" className="input-filtro" />
 
           <select className="select-filtro">
             <option value="">Todos los estados</option>
@@ -83,9 +108,7 @@ export default function Citas() {
             <option value="completada">Completada</option>
           </select>
 
-          <button className="btn-buscar">
-            Buscar
-          </button>
+          <button className="btn-buscar">Buscar</button>
         </div>
       </section>
 
@@ -117,9 +140,7 @@ export default function Citas() {
                   <td>{cita.servicio}</td>
                   <td>{cita.fecha}</td>
                   <td>{cita.hora}</td>
-                  <td>
-                    RD$ {cita.precioTotal.toFixed(2)}
-                  </td>
+                  <td>RD$ {cita.precioTotal.toFixed(2)}</td>
 
                   <td>
                     <span
@@ -127,10 +148,10 @@ export default function Citas() {
                         cita.estado === "Confirmada"
                           ? "estado-confirmada"
                           : cita.estado === "Pendiente"
-                          ? "estado-pendiente"
-                          : cita.estado === "Cancelada"
-                          ? "estado-cancelada"
-                          : "estado-completada"
+                            ? "estado-pendiente"
+                            : cita.estado === "Cancelada"
+                              ? "estado-cancelada"
+                              : "estado-completada"
                       }`}
                     >
                       {cita.estado}
@@ -139,9 +160,7 @@ export default function Citas() {
 
                   <td>
                     <div className="acciones-cita">
-                      <button className="btn-accion-cita">
-                        Editar
-                      </button>
+                      <button className="btn-accion-cita">Editar</button>
 
                       <button className="btn-accion-cita btn-eliminar-cita">
                         Eliminar
@@ -162,39 +181,27 @@ export default function Citas() {
 
             <div className="formulario-cita">
               <select className="input-cita">
-                <option value="">
-                  Seleccione un cliente
-                </option>
-                <option>María Rodríguez</option>
-                <option>Carlos Pérez</option>
+                <option value="">Seleccione un cliente</option>
+                {clientes.map(c => (<option key={c.IdCliente} value={c.IdCliente}>{c.Nombre}{" "}{c.Apellido}</option>))}
               </select>
 
               <select className="input-cita">
-                <option value="">
-                  Seleccione un empleado
-                </option>
-                <option>Ana Martínez</option>
-                <option>Laura Gómez</option>
+                <option value="">Seleccione un empleado</option>
+                {Empleados.map(e => (<option key={e.IdEmpleado} value={e.IdEmpleado}>{e.Nombre}{" "}{e.Apellido}</option>))}
               </select>
 
-              <select className="input-cita">
-                <option value="">
-                  Seleccione un servicio
-                </option>
-                <option>Corte de cabello</option>
-                <option>Barbería</option>
+              <select
+                className="input-cita"
+                value={idServicioSeleccionado}
+                onChange={manejarCambioServicio}
+              >
+                <option value="">Seleccione un servicio</option>
+                {servicios.map(s => (<option key={s.IdServicio} value={s.IdServicio}>{s.Nombre}</option>))}
               </select>
 
-              <input
-                type="date"
-                className="input-cita"
-              />
+              <input type="date" className="input-cita" />
 
-              <input
-                type="text"
-                placeholder="Hora"
-                className="input-cita"
-              />
+              <input type="text" placeholder="Hora" className="input-cita" />
 
               <textarea
                 placeholder="Descripción"
@@ -202,15 +209,16 @@ export default function Citas() {
               />
 
               <input
-                type="number"
+                type="text"
                 placeholder="Precio total"
                 className="input-cita"
+                value={`RD$ ${precioTotal}`}
+                readOnly
+                onChange={(e) => setPrecioTotal(e.target.value === "" ? "" : Number(e.target.value))}
               />
 
               <select className="input-cita">
-                <option value="">
-                  Seleccione un estado
-                </option>
+                <option value="">Seleccione un estado</option>
                 <option>Pendiente</option>
                 <option>Confirmada</option>
                 <option>Cancelada</option>
@@ -225,9 +233,7 @@ export default function Citas() {
                   Cancelar
                 </button>
 
-                <button className="btn-guardar">
-                  Guardar Cita
-                </button>
+                <button className="btn-guardar">Guardar Cita</button>
               </div>
             </div>
           </div>
