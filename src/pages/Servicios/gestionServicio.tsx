@@ -1,10 +1,76 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../Servicios/gestionServicio.css";
+import { useState, useEffect } from "react";
 import ServicioForm from "./formularioServicio";
+import "../Servicios/gestionServicio.css";
+import {
+  type ServicioDetalle,
+  ListaServicio,
+  DesactivarServicio,
+} from "../../Controllers/ServiciosController";
+
+import { type Servicios } from "../../services/Servicios";
+
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const Alertas = withReactContent(Swal);
 
 export default function GestionServicios() {
+  const [servicios, setServicios] = useState<ServicioDetalle[]>([]);
+
+  const cargarServicios = () => {
+    ListaServicio().then(setServicios);
+  };
+  console.log(servicios);
+  useEffect(() => {
+    cargarServicios();
+  }, []);
+
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+
+  const guardarServicio = (_nuevoServicio: Servicios) => {
+    setMostrarFormulario(false);
+    cargarServicios();
+  };
+
+  const manejarEliminar = (idServicio: number) => {
+    Alertas.fire({
+      title: "¿Inactivar servicio?",
+      text: "El estado del servicio cambiará a Inactivo.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, inactivar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const exito = await DesactivarServicio(idServicio);
+
+        if (exito) {
+          setServicios((prev) =>
+            prev.map((servicio) =>
+              servicio.IdServicio === idServicio
+                ? { ...servicio, Estado: "Inactivo" }
+                : servicio,
+            ),
+          );
+
+          Alertas.fire({
+            title: "¡Inactivado!",
+            text: "El servicio ha sido marcado como Inactivo.",
+            icon: "success",
+          });
+        } else {
+          Alertas.fire({
+            title: "Error",
+            text: "No se pudo cambiar el estado del servicio.",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
 
   return (
     <div className="servicios-container">
@@ -52,44 +118,38 @@ export default function GestionServicios() {
           </thead>
 
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Corte de Cabello</td>
-              <td>$15.00</td>
-              <td>
-                <span className="estado-activo">Activo</span>
-              </td>
-              <td>
-                <button className="btn-editar">Editar</button>
-                <button className="btn-eliminar">Eliminar</button>
-              </td>
-            </tr>
+            {servicios.map((servicio) => (
+              <tr key={servicio.IdServicio}>
+                <td>{servicio.IdServicio}</td>
 
-            <tr>
-              <td>2</td>
-              <td>Secado y Peinado</td>
-              <td>$25.00</td>
-              <td>
-                <span className="estado-activo">Activo</span>
-              </td>
-              <td>
-                <button className="btn-editar">Editar</button>
-                <button className="btn-eliminar">Eliminar</button>
-              </td>
-            </tr>
+                <td>{servicio.Nombre}</td>
 
-            <tr>
-              <td>3</td>
-              <td>Tinte Completo</td>
-              <td>$50.00</td>
-              <td>
-                <span className="estado-inactivo">Inactivo</span>
-              </td>
-              <td>
-                <button className="btn-editar">Editar</button>
-                <button className="btn-eliminar">Eliminar</button>
-              </td>
-            </tr>
+                <td>{servicio.Precio}</td>
+
+                <td>
+                  <span
+                    className={
+                      servicio.Estado === "Activo"
+                        ? "estado-activo"
+                        : "estado-inactivo"
+                    }
+                  >
+                    {servicio.Estado}
+                  </span>
+                </td>
+
+                <td>
+                  <button className="btn-editar">Editar</button>
+
+                  <button
+                    className="btn-eliminar"
+                    onClick={() => manejarEliminar(servicio.IdServicio)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </section>
@@ -97,7 +157,7 @@ export default function GestionServicios() {
       {/* Modal */}
       {mostrarFormulario && (
         <ServicioForm
-          onGuardar={() => setMostrarFormulario(false)}
+          onGuardar={guardarServicio}
           onCancelar={() => setMostrarFormulario(false)}
         />
       )}

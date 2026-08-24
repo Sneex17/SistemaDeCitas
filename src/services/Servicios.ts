@@ -1,5 +1,5 @@
 export interface Servicios{
-     IdServicio: number;
+     IdServicio?: number;
      Nombre: string;
      Precio: number;
      IdEstado: number;
