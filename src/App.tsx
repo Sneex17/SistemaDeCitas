@@ -63,6 +63,7 @@ function App() {
           Nombre: empleado?.nombre,
           Apellido: empleado?.apellido,
           Rol: { Rol: nombreRol },
+          IdRol: empleado?.idrol,
         },
       });
     } catch (err: any) {
